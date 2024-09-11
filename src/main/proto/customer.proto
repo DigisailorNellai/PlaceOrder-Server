@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.digisailor.grpc";
+
+package customer;
+
+service CustomerService {
+  rpc CheckUser (CheckUserRequest) returns (CheckUserResponse);
+
+}
+
+message CheckUserRequest {
+  int64 userId = 1;
+}
+
+message CheckUserResponse {
+  bool isUserPresent = 1;
+}
+
+
