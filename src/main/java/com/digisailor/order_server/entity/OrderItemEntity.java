@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Entity
@@ -11,10 +13,11 @@ import lombok.Setter;
 public class OrderItemEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO) // Auto-generation for UUIDs
+    @Column(name = "orderItems_id", updatable = false, nullable = false)
+    private UUID id;
 
-    private String productId;
+    private UUID productId;
     private String productName;
     private int quantity;
 

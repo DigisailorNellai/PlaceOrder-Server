@@ -15,11 +15,12 @@ import java.util.UUID;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO) // Auto-generation for UUIDs
+    @Column(name = "order_id", updatable = false, nullable = false)
+    private UUID orderId; // Use UUID as the primary key
 
     @Column(name = "user_id")
-    private UUID userId; // Changed to UUID
+    private UUID userId; // UUID for userId
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

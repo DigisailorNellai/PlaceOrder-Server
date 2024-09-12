@@ -16,23 +16,23 @@ message CreateOrderRequest {
 }
 
 message OrderItem {
-  string productId = 1;
+  string productId = 1; // UUID as string
   string productName = 2;
   int32 quantity = 3;
 }
 
 message OrderResponse {
-  int64 orderId = 1;
+  string orderId = 1; // UUID as string
   OrderStatus status = 2;
 }
 
 message GetOrderStatusRequest {
-  int64 orderId = 1;
+  string orderId = 1; // UUID as string
   string userId = 2; // UUID as string
 }
 
 message OrderStatusResponse {
-  int64 orderId = 1;
+  string orderId = 1; // UUID as string
   OrderStatus status = 2;
   string statusDescription = 3;
   int64 timestamp = 4;
