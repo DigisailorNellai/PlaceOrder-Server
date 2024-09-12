@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,10 +30,10 @@ public class OrderServiceImpl extends OrderServiceGrpc.OrderServiceImplBase {
     public void createOrder(CreateOrderRequest request, StreamObserver<OrderResponse> responseObserver) {
         // Create and save the new order
         Order order = new Order();
-        order.setUserId(request.getUserId());
+        order.setUserId(UUID.fromString(request.getUserId())); // Convert String to UUID
         order.setStatus(OrderStatus.PLACED); // Set initial status
 
-        // Map gRPC OrderItem to entity OrderItem
+        // Map gRPC OrderItem to entity OrderItemEntity
         Order finalOrder = order;
         List<OrderItemEntity> orderItems = request.getItemsList().stream().map(item -> {
             OrderItemEntity orderItemEntity = new OrderItemEntity();
@@ -43,7 +44,7 @@ public class OrderServiceImpl extends OrderServiceGrpc.OrderServiceImplBase {
             return orderItemEntity;
         }).collect(Collectors.toList());
 
-        // Ensure the setItems method accepts List<OrderItemEntity>
+        // Set order items
         order.setItems(orderItems);
 
         // Save order to the database (this will cascade and save the items too)

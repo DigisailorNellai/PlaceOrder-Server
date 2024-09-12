@@ -8,18 +8,17 @@ package order;
 service OrderService {
   rpc CreateOrder (CreateOrderRequest) returns (OrderResponse);
   rpc GetOrderStatus (GetOrderStatusRequest) returns (OrderStatusResponse);
-
 }
 
 message CreateOrderRequest {
-  int64 userId = 1;
+  string userId = 1; // UUID as string
   repeated OrderItem items = 2;
 }
 
 message OrderItem {
   string productId = 1;
   string productName = 2;
-  int32 quantity = 3 ;
+  int32 quantity = 3;
 }
 
 message OrderResponse {
@@ -29,7 +28,7 @@ message OrderResponse {
 
 message GetOrderStatusRequest {
   int64 orderId = 1;
-  int64 userId = 2;
+  string userId = 2; // UUID as string
 }
 
 message OrderStatusResponse {
@@ -39,14 +38,10 @@ message OrderStatusResponse {
   int64 timestamp = 4;
 }
 
-
 enum OrderStatus {
-
   PLACED = 0;
   ACCEPTED = 1;
   PICKED_UP = 2;
   DELIVERED = 3;
   CANCELLED = 4;
 }
-
-
