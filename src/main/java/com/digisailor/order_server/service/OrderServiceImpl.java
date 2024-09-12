@@ -1,14 +1,19 @@
 package com.digisailor.order_server.service;
 
 import com.digisailor.grpc.CreateOrderRequest;
+import com.digisailor.grpc.OrderItem;
 import com.digisailor.grpc.OrderResponse;
 import com.digisailor.grpc.OrderServiceGrpc;
 import com.digisailor.grpc.OrderStatus;
 import com.digisailor.order_server.entity.Order;
+import com.digisailor.order_server.entity.OrderItemEntity;
 import com.digisailor.order_server.repository.OrderRepository;
 import io.grpc.stub.StreamObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl extends OrderServiceGrpc.OrderServiceImplBase {
@@ -24,9 +29,24 @@ public class OrderServiceImpl extends OrderServiceGrpc.OrderServiceImplBase {
     public void createOrder(CreateOrderRequest request, StreamObserver<OrderResponse> responseObserver) {
         // Create and save the new order
         Order order = new Order();
+        order.setUserId(request.getUserId());
         order.setStatus(OrderStatus.PLACED); // Set initial status
 
-        // Save order to the database
+        // Map gRPC OrderItem to entity OrderItem
+        Order finalOrder = order;
+        List<OrderItemEntity> orderItems = request.getItemsList().stream().map(item -> {
+            OrderItemEntity orderItemEntity = new OrderItemEntity();
+            orderItemEntity.setProductId(item.getProductId());
+            orderItemEntity.setProductName(item.getProductName());
+            orderItemEntity.setQuantity(item.getQuantity());
+            orderItemEntity.setOrder(finalOrder); // Associate with the order
+            return orderItemEntity;
+        }).collect(Collectors.toList());
+
+        // Ensure the setItems method accepts List<OrderItemEntity>
+        order.setItems(orderItems);
+
+        // Save order to the database (this will cascade and save the items too)
         order = orderRepository.save(order);
 
         // Build the response

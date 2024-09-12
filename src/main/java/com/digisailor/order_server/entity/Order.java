@@ -1,10 +1,12 @@
 package com.digisailor.order_server.entity;
 
+import com.digisailor.grpc.OrderItem;
 import com.digisailor.grpc.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,18 +14,27 @@ import lombok.Setter;
 @Table(name = "orders")
 public class Order {
 
-    // Getters and Setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId; // Add userId to the Order entity
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public void setId(Long id) {
-        this.id = id;
+    // One order can have multiple items, mapped by the "order" field in OrderItem
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
+    private List<OrderItemEntity> items;
+
+    // Getters and setters for userId and items
+
+    // Getter and setter for items
+    public void setItems(List<OrderItemEntity> items) {
+        this.items = items;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
+    public List<OrderItemEntity> getItems() {
+        return items;
     }
 }
